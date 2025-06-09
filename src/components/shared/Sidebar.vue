@@ -25,13 +25,13 @@
         />
         <MenuItem
           icon="Operational"
-          label="Dpto Operativ0"
+          label="Dpto Operativo"
           :items="[
             { name: 'Reporte diario', route: '/operativa/reporte' },
             { name: 'Check-ins', route: '/operativa/checkins' },
           ]"
-          :is-open="openMenu === 'Dpto Operativ0'"
-          @toggle="toggleMenu('Dpto Operativ0')"
+          :is-open="openMenu === 'Dpto Operativo'"
+          @toggle="toggleMenu('Dpto Operativo')"
         />
         <MenuItem
           icon="User"

@@ -193,18 +193,21 @@
     </div>
 
     <ModalReutilizable :show="modalNuevoProducto" @close="cerrarModal">
-      <h2 class="text-xl font-bold text-blue-800 mb-4">Crear nuevo producto</h2>
-      <!-- Aquí va tu formulario o contenido -->
-      <form>
-        <div class="mb-4">
-          <label class="block text-gray-700 mb-1">Nombre del producto</label>
-          <input type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
+      <h2 class="text-xl font-bold text-blue-800 mb-4">Ingreso de producto no listado</h2>
+      <form @submit.prevent="guardarProducto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div v-for="(field, index) in campos" :key="index">
+            <label class="block text-gray-700 mb-1" :for="field.id">{{ field.label }}</label>
+            <input :id="field.id" :type="field.type" v-model="producto[field.model]"
+              class="w-full border border-gray-300 rounded px-3 py-2" />
+          </div>
         </div>
-        <!-- Agrega más campos si es necesario -->
 
         <div class="flex justify-end mt-4">
           <button type="button" class="mr-2 px-4 py-2 bg-gray-200 rounded" @click="cerrarModal">Cancelar</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Guardar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Guardar
+          </button>
         </div>
       </form>
     </ModalReutilizable>
@@ -229,6 +232,7 @@ const searchCategoria = ref('');
 const productosTotal = ref(0);
 const mostrarLista = ref(false);
 const mostrarListaFilter = ref(false);
+const modalNuevoProducto = ref(false);
 
 const cotizacion = reactive({
   numero: 115,
@@ -252,8 +256,6 @@ const cotizacion = reactive({
   cantidadJornada: 0,
   cantidadProducto: 0
 });
-
-const modalNuevoProducto = ref(false);
 
 function abrirModal() {
   modalNuevoProducto.value = true;
@@ -344,4 +346,38 @@ const pendientes = [
     urgencia: 'Alta'
   }
 ]
+
+
+
+const producto = ref({
+  idCatalogo: null,
+  nombre: '',
+  valorCuadroCotizador: null,
+  cop: null,
+  linkFotoDispositivo: '',
+  dispositivo: '',
+  descripcion: '',
+  incluyeTransporteBogMde: '',
+  valorListaCAFAM: null,
+  valorListaColsubsidio: null,
+  valorListaComfama: null,
+  valorListaCompensar: null,
+  valorListaConfenalco: null,
+  valorCuadroCotizador1: null,
+  verificarPrestacionProvExterno: ''
+})
+
+const campos = [
+  { id: 'idCatalogo', label: 'ID Catálogo', model: 'idCatalogo', type: 'number' },
+  { id: 'idCatalogo', label: 'ID Cotizador', model: 'idCatalogo', type: 'number' },
+  { id: 'verificarPrestacionProvExterno', label: 'Proveedor', model: 'verificarPrestacionProvExterno', type: 'text' },
+  { id: 'nombre', label: 'Descripción producto', model: 'nombre', type: 'text' },
+  { id: 'nombre', label: 'Cantidad', model: 'nombre', type: 'text' },
+  { id: 'cop', label: 'Costo del producto', model: 'cop', type: 'number' },
+  { id: 'valorCuadroCotizador', label: 'Soporte digital', model: 'valorCuadroCotizador', type: 'number' },
+  { id: 'linkFotoDispositivo', label: 'Imagen del producto', model: 'linkFotoDispositivo', type: 'text' },
+  { id: 'dispositivo', label: 'Categoria', model: 'dispositivo', type: 'text' },
+  { id: 'incluyeTransporteBogMde', label: 'Incluye Transporte Bog-Mde', model: 'incluyeTransporteBogMde', type: 'text' },
+]
+
 </script>
