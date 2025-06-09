@@ -1,0 +1,1 @@
+import{p as r}from"./index-leR-G3hy.js";const t=async()=>{try{return await r.get("https://backend-beone-production.up.railway.app/producto",{headers:{"Content-Type":"application/json"}})}catch(o){throw console.error("Fallo el servicio para obtener los productos",o),o}};export{t as g};

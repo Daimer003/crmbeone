@@ -1,0 +1,1 @@
+import{g as o}from"./customer.service-ZhIoXb7V.js";import{_ as e,c as s,f as c,o as r}from"./index-leR-G3hy.js";const a=ref([]);ref([]);c(async()=>{try{const t=await o();console.log(t),a.value=t.data}catch{}});const n={},_={class:"text-black"};function f(t,m,p,u,l,d){return r(),s("p",_,"customer")}const $=e(n,[["render",f]]);export{$ as default};
