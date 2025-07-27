@@ -6,7 +6,7 @@
       </div>
   
       <!-- Contenido principal con margen izquierdo -->
-      <div class="ml-64 w-full min-h-screen p-6">
+      <div class="ml-64 w-full max-w-[1430px] min-h-screen p-6">
         <router-view />
       </div>
     </div>

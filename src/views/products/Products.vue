@@ -10,7 +10,7 @@ onMounted(async () => {
   try {
     const productos = await getProducts()
     data.value = productos.data
-
+  
     columns.value = [
       { label: 'Nombre', field: 'nombre' },
       { label: 'Categoría', field: 'categoria' },
@@ -34,17 +34,15 @@ onMounted(async () => {
 
 <template>
   <div class="p-4">
-    <h1 class="text-2xl font-semibold mb-4">Listado de Productos</h1>
+    <h1 class="text-2xl font-semibold mb-4">Listado de Clientes</h1>
+
     <TableDinamic :data="data" :columns="columns">
       <template #foto="{ value }">
-        <img
-          v-if="value"
-          :src="value"
-          alt="Foto del dispositivo"
-          class="w-12 h-12 object-cover rounded border"
-        />
+        <img v-if="value" :src="value" alt="Foto del dispositivo" class="w-12 h-12 object-cover rounded border" />
         <span v-else class="text-gray-400">N/A</span>
       </template>
     </TableDinamic>
+
+
   </div>
 </template>

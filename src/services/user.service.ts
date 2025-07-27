@@ -25,7 +25,7 @@ interface CreateUser {
 export const auth = async ({ email, password }: AuthData) => {
   try {
     const response = await axios.post(
-      "https://backend-beone-production.up.railway.app/auth/login",
+      "http://localhost:3000/auth/login",
       {
         email,
         password,
@@ -34,6 +34,7 @@ export const auth = async ({ email, password }: AuthData) => {
         headers: {
           "Content-Type": "application/json",
         },
+         withCredentials: true
       }
     );
 
@@ -52,7 +53,7 @@ export const auth = async ({ email, password }: AuthData) => {
 export const createUser = async ({ email, password, fullName, role }: CreateUser) => {
   try {
     const response = await axios.post(
-      "https://backend-beone-production.up.railway.app/auth/register",
+      "http://localhost:3000/auth/register",
       {
         email: email,
         password: password,
@@ -82,7 +83,7 @@ export const createUser = async ({ email, password, fullName, role }: CreateUser
 export const getUsers = async () => {
   try {
     const response = await axios.get(
-      "https://backend-beone-production.up.railway.app/users",
+      "http://localhost:3000/users",
       {
         headers: {
           "Content-Type": "application/json",

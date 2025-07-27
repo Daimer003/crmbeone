@@ -1,9 +1,9 @@
 import axios from "axios";
 
-export const getProducts = async () => {
+export const getSuppliers = async () => {
     try {
         const response = await axios.get(
-            "http://localhost:3000/producto",
+            "http://localhost:3000/suppliers",
 
             {
                 headers: {
@@ -14,7 +14,7 @@ export const getProducts = async () => {
 
         return response;
     } catch (error) {
-        console.error("Fallo el servicio para obtener los productos", error);
+        console.error("Fallo el servicio para obtener los clientes", error);
         throw error; // ✅ Lanza el error para manejarlo donde se use
     }
 };

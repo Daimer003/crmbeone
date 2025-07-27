@@ -3,7 +3,7 @@ import axios from "axios";
 export const getCustomer = async () => {
     try {
         const response = await axios.get(
-            "https://backend-beone-production.up.railway.app/customer",
+            "http://localhost:3000/customer",
 
             {
                 headers: {

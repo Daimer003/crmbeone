@@ -1,6 +1,5 @@
 <template>
   <div class="w-full">
-
     <div class="bg-white shadow-md rounded-xl p-6 mx-auto space-y-8 mb-10">
       <!-- Título -->
       <div>
@@ -60,9 +59,10 @@
             <label class="block text-gray-800 font-medium mb-1">Unidad de Ejecución</label>
             <select v-model="cotizacion.unidadEjecucion"
               class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800">
-              <option>Nivel Nacional</option>
-              <option>Nivel Regional</option>
-              <option>Local</option>
+              <option>Antioquia</option>
+              <option>Cundinamarca</option>
+              <option>Colombia</option>
+              <option>Israel</option>
             </select>
           </div>
 
@@ -117,7 +117,7 @@
         </div>
       </div>
 
-      <div class="flex gap-4 w-full align-center justify-center">
+      <div class="flex gap-4 w-full align-center justify-end">
         <div class="w-full">
           <label class="block text-gray-800 font-medium mb-1">Q Jornada</label>
           <input v-model="cotizacion.cantidadJornada" type="number" min="0"
@@ -129,54 +129,95 @@
             class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800" />
         </div>
 
-        <div class="flex flex-row w-full justify-center items-center">
-          <p class="text-black text-md">SubTotal: {{ productosTotal }}</p>
-          <p class="text-black text-md">Total: {{ productosTotal }}</p>
-        </div>
 
-        <div>
-          <button @click="abrirModal"
-            class="bg-[#dbeafe] w-full min-w-[220px] hover:bg-blue-200 text-blue-600 font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2 mt-3">
-            Agregar nuevo
-          </button>
-        </div>
-        <div>
-          <button
-            class="bg-blue-600 w-full min-w-[220px] hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2 mt-3">
-            Agregar
-          </button>
-        </div>
+        <button @click="abrirModal"
+          class="bg-[#dbeafe] w-full min-w-[220px] hover:bg-blue-200 text-blue-600 font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2">
+          Agregar nuevo
+        </button>
+
+
+        <button @click="startQuote"
+          class="bg-blue-600 w-full min-w-[220px] hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2">
+          Agregar
+        </button>
+
       </div>
     </div>
 
-    <!-- Tabla de tareas urgentes -->
+    <div class=" w-full mb-10">
+      <ResumenCotizacion :subtotal="100000" :iva="19000" :valorTotal="119000" :subtotalDescuento="90000"
+        :ivaDescuento="17100" :valorTotalDescuento="107100" :subtotalFinal="95000" :ivaFinal="18050"
+        :valorTotalFinal="113050" />
+    </div>
+
+    <!-- Tabla de cotizaciones -->
     <div class="bg-white rounded-2xl shadow-lg p-6">
-      <h2 class="text-2xl font-semibold text-gray-800 ">Lista agregada</h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full table-auto border-separate border-spacing-y-3">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Lista de Cotizaciones</h2>
+
+      <div class="overflow-x-auto w-full max-w-[1330px]">
+        <table class="min-w-[1200px] table-auto border-separate border-spacing-y-3">
           <thead>
             <tr class="text-left text-sm text-gray-600">
-              <th class="px-4 py-2">Tarea</th>
-              <th class="px-4 py-2">Responsable</th>
-              <th class="px-4 py-2">Vencimiento</th>
+              <th class="px-4 py-2">ID</th>
+              <th class="px-4 py-2">Número</th>
+              <th class="px-4 py-2">Fecha Cotización</th>
               <th class="px-4 py-2">Estado</th>
+              <th class="px-4 py-2">Agente Comercial</th>
+              <th class="px-4 py-2">Cliente</th>
+              <th class="px-4 py-2">Empresa</th>
+              <th class="px-4 py-2">Contacto</th>
+              <th class="px-4 py-2">Correo</th>
+              <th class="px-4 py-2">Celular</th>
+              <th class="px-4 py-2">Inicio Evento</th>
+              <th class="px-4 py-2">Fin Evento</th>
+              <th class="px-4 py-2">Ubicación</th>
+              <th class="px-4 py-2">Link Maps</th>
+              <th class="px-4 py-2">Horario Inicio</th>
+              <th class="px-4 py-2">Horario Fin</th>
+              <th class="px-4 py-2">Asistentes</th>
+              <th class="px-4 py-2">Vigencia</th>
+              <th class="px-4 py-2">Unidad Ejecución</th>
+              <th class="px-4 py-2">Tipo Suelo</th>
+              <th class="px-4 py-2">Cant. Jornadas</th>
+              <th class="px-4 py-2">Cant. Productos</th>
               <th class="px-4 py-2">Urgencia</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in pendientes" :key="item.id" class="bg-gray-50 rounded-lg shadow-sm">
-              <td class="px-4 py-3 text-gray-800 font-medium">{{ item.tarea }}</td>
-              <td class="px-4 py-3 text-gray-700">{{ item.responsable }}</td>
-              <td class="px-4 py-3 text-gray-600">{{ item.vencimiento }}</td>
+            <tr v-for="item in quotation" :key="item.id" class="bg-gray-50 rounded-lg shadow-sm text-[12px]">
+              <td class="px-4 py-3 text-gray-800 font-medium">{{ item.id }}</td>
+              <td class="px-4 py-3">{{ item.numero }}</td>
+              <td class="px-4 py-3">{{ item.fechaCotizacion }}</td>
               <td class="px-4 py-3">
                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold" :class="{
-                  'bg-yellow-100 text-yellow-800': item.estado === 'Pendiente',
-                  'bg-blue-100 text-blue-800': item.estado === 'En curso',
-                  'bg-green-100 text-green-800': item.estado === 'Completado'
+                  'bg-yellow-100 text-yellow-800': item.quotationStatus.id === 1,
+                  'bg-blue-100 text-blue-800': item.quotationStatus.id === 2,
+                  'bg-green-100 text-green-800': item.quotationStatus.id === 3,
                 }">
-                  {{ item.estado }}
+                  {{ item.quotationStatus.name }}
                 </span>
               </td>
+              <td class="px-4 py-3">{{ item.agenteComercial }}</td>
+              <td class="px-4 py-3">{{ item.cliente }}</td>
+              <td class="px-4 py-3">{{ item.empresa }}</td>
+              <td class="px-4 py-3">{{ item.contacto }}</td>
+              <td class="px-4 py-3">{{ item.correo }}</td>
+              <td class="px-4 py-3">{{ item.celular }}</td>
+              <td class="px-4 py-3">{{ item.fechaInicioEvento }}</td>
+              <td class="px-4 py-3">{{ item.fechaFinEvento }}</td>
+              <td class="px-4 py-3">{{ item.ubicacion }}</td>
+              <td class="px-4 py-3">
+                <a :href="item.linkMaps" class="text-blue-600 underline" target="_blank">{{ item.linkMaps }}</a>
+              </td>
+              <td class="px-4 py-3">{{ item.horarioInicio }}</td>
+              <td class="px-4 py-3">{{ item.horarioFin }}</td>
+              <td class="px-4 py-3">{{ item.asistentes }}</td>
+              <td class="px-4 py-3">{{ item.vigencia }}</td>
+              <td class="px-4 py-3">{{ item.unidadEjecucion }}</td>
+              <td class="px-4 py-3">{{ item.tipoSuelo }}</td>
+              <td class="px-4 py-3">{{ item.cantidadJornada }}</td>
+              <td class="px-4 py-3">{{ item.cantidadProducto }}</td>
+
               <td class="px-4 py-3">
                 <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold" :class="{
                   'bg-red-100 text-red-800': item.urgencia === 'Alta',
@@ -191,6 +232,8 @@
         </table>
       </div>
     </div>
+
+
 
     <ModalReutilizable :show="modalNuevoProducto" @close="cerrarModal">
       <h2 class="text-xl font-bold text-blue-800 mb-4">Ingreso de producto no listado</h2>
@@ -211,6 +254,8 @@
         </div>
       </form>
     </ModalReutilizable>
+
+
   </div>
 </template>
 
@@ -222,8 +267,11 @@ import { ref, reactive, onMounted, watch } from 'vue';
 import { getProducts } from '../../services/products.service';
 import { getCustomer } from '../../services/customer.service';
 import ModalReutilizable from '../../components/modal/ModalReutilizable.vue';
+import { createQuotation, getQuotation } from '../../services/quotation.service';
+import ResumenCotizacion from '../../components/panels/ResumenCotizacion.vue';
 
 const productos = ref([]);
+const quotation = ref([])
 const productosFiltrados = ref([]);
 const categoria = ref([]);
 const categoriasFiltradas = ref([]);
@@ -235,26 +283,27 @@ const mostrarListaFilter = ref(false);
 const modalNuevoProducto = ref(false);
 
 const cotizacion = reactive({
-  numero: 115,
-  fechaCotizacion: '2025-04-14',
+  numero: 117,
+  fechaCotizacion: "2025-06-30T12:00:00.000Z",
   agenteComercial: '',
   cliente: '',
   empresa: '',
   contacto: '',
   correo: '',
   celular: '',
-  fechaInicioEvento: '',
-  fechaFinEvento: '',
+  fechaInicioEvento: "2025-07-05T08:00:00.000Z",
+  fechaFinEvento: "2025-07-06T17:00:00.000Z",
   ubicacion: '',
   linkMaps: '',
   horarioInicio: '',
   horarioFin: '',
-  asistentes: '',
+  asistentes: 10,
   vigencia: '15 días',
   unidadEjecucion: 'Nivel Nacional',
   tipoSuelo: '',
-  cantidadJornada: 0,
-  cantidadProducto: 0
+  cantidadJornada: 2,
+  cantidadProducto: 3,
+  quotationStatusId: 1
 });
 
 function abrirModal() {
@@ -265,6 +314,7 @@ function cerrarModal() {
   modalNuevoProducto.value = false;
 }
 
+//*Obtiene los productos
 onMounted(async () => {
   try {
     const response = await getProducts();
@@ -288,6 +338,21 @@ onMounted(async () => {
     console.error('Error al cargar clientes:', error);
   }
 });
+
+const myQuotes = async () => {
+  try {
+    const response = await getQuotation()
+    quotation.value = response.data
+    console.log(response)
+  } catch (error) {
+    console.error('Error al cargar la cotizaciones:', error);
+  }
+}
+
+//*Obtiene las cotizaciones creadas de la orden
+onMounted(async () => {
+  myQuotes()
+})
 
 const filtrarProductos = () => {
   const termProducto = searchProducto.value.toLowerCase().trim();
@@ -328,26 +393,6 @@ const ocultarListaConRetraso = () => {
 
 watch(searchCategoria, filtrarProductos, filtrarCategorias);
 
-const pendientes = [
-  {
-    id: 1,
-    tarea: 'Enviar cotización 115',
-    responsable: 'Laura',
-    vencimiento: '2025-05-30',
-    estado: 'Pendiente',
-    urgencia: 'Alta'
-  },
-  {
-    id: 2,
-    tarea: 'Confirmar lugar del evento',
-    responsable: 'Carlos',
-    vencimiento: '2025-05-29',
-    estado: 'En curso',
-    urgencia: 'Alta'
-  }
-]
-
-
 
 const producto = ref({
   idCatalogo: null,
@@ -379,5 +424,20 @@ const campos = [
   { id: 'dispositivo', label: 'Categoria', model: 'dispositivo', type: 'text' },
   { id: 'incluyeTransporteBogMde', label: 'Incluye Transporte Bog-Mde', model: 'incluyeTransporteBogMde', type: 'text' },
 ]
+
+
+
+//Iniciar un cotización
+const startQuote = async () => {
+  try {
+    const response = await createQuotation(cotizacion)
+    console.log(response)
+
+    myQuotes()
+  } catch (error) {
+    throw Error('La creacion de la cotización fallo')
+  }
+}
+
 
 </script>

@@ -2,29 +2,27 @@
 import { ref, onMounted } from 'vue'
 import TableDinamic from '../../components/tables/TableDinamic.vue'
 import { getProducts } from '../../services/products.service'
+import { getQuotation } from '../../services/quotation.service'
+import { getSuppliers } from '../../services/suppliers.service'
 
 const data = ref([])
 const columns = ref([])
 
 onMounted(async () => {
   try {
-    const productos = await getProducts()
-    data.value = productos.data
 
+    
+
+    const suppliers= await getSuppliers()
+    data.value =suppliers .data
+  console.log(data.value)
     columns.value = [
-      { label: 'Nombre', field: 'nombre' },
-      { label: 'Categoría', field: 'categoria' },
-      { label: 'Dispositivo', field: 'dispositivo' },
-      { label: 'COP', field: 'cop', formatFn: val => `$${val?.toLocaleString()}` },
-      { label: 'Bodega', field: 'bodega' },
-      { label: 'Estado', field: 'estado' },
-      { label: 'Total', field: 'total', formatFn: val => `$${val?.toLocaleString()}` },
-      { label: 'Utilidad Neta', field: 'utilidadNeta', formatFn: val => `$${val?.toLocaleString()}` },
-      {
-        label: 'Foto',
-        field: 'linkFotoDispositivo',
-        slot: 'foto', // se usará el slot con nombre "foto"
-      },
+      { label: 'Id', field: 'id' },
+      { label: 'Nombre', field: 'name' },
+      { label: 'Nit', field: 'nit' },
+      { label: 'Email', field: 'email'},
+      { label: 'Phone', field: 'contact' },
+      { label: 'Referencia', field: 'reference' },
     ]
   } catch (error) {
     console.error('Error al cargar productos:', error)

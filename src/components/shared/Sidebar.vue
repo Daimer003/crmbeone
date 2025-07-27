@@ -16,9 +16,10 @@
             { name: 'Consultar', route: '/admin/precios' },
             { name: 'Lista de precios', route: '/admin/precios' },
             { name: 'Lista de precios de terceros', route: '/admin/precios' },
-            { name: 'Proveedores', route: '/admin/proveedores' },
+            { name: 'Proveedores', route: '/suppliers/suppliers' },
             { name: 'Customer', route: '/customer/customer' },
-            { name: 'Reportes', route: '/admin/proveedores' },
+            { name: 'Reportes', route: '/admin/proveedores' }, 
+        
           ]"
           :is-open="openMenu === 'Dpto Comercial'"
           @toggle="toggleMenu('Dpto Comercial')"
