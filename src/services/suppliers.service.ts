@@ -18,3 +18,23 @@ export const getSuppliers = async () => {
         throw error; // ✅ Lanza el error para manejarlo donde se use
     }
 };
+
+
+export const createSuppliers = async (data: any) => {
+    try {
+        const response = await axios.post(
+            "http://localhost:3000/suppliers",
+            data,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        return response;
+    } catch (error) {
+        console.error("Fallo el servicio para obtener los clientes", error);
+        throw error; // ✅ Lanza el error para manejarlo donde se use
+    }
+};

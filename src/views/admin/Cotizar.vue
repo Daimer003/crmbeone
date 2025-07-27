@@ -24,19 +24,7 @@
           </select>
         </div>
 
-        <div>
-          <label class="block text-gray-800 font-medium mb-1">Cliente final</label>
-          <select v-model="cotizacion.empresa" class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800">
-            <option>Cliente directo</option>
-            <option>Compensar</option>
-            <option>Colsubsidio</option>
-            <option>Cafam</option>
-            <option>Comfama</option>
-            <option>Comfenalco</option>
-            <option>Comfachocó</option>
-          </select>
-        </div>
-
+        <ClienteFinalSelector v-model="cotizacion.empresa" v-model:dataClient="clienteSeleccionado" />
         <InputLabel label="Contacto" v-model="cotizacion.contacto" />
         <InputLabel label="Correo" v-model="cotizacion.correo" type="email" />
         <InputLabel label="Celular" v-model="cotizacion.celular" />
@@ -46,6 +34,8 @@
       <div class="border-t pt-6 space-y-4">
         <h3 class="text-xl font-semibold text-gray-800">Detalles del Evento</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <InputLabel label="Nombre descriptivo del evento" v-model="cotizacion.vigencia" />
           <InputLabel label="Fecha Inicio Evento" v-model="cotizacion.fechaInicioEvento" type="date" />
           <InputLabel label="Fecha Fin Evento" v-model="cotizacion.fechaFinEvento" type="date" />
           <InputLabel label="Ubicación del Evento" v-model="cotizacion.ubicacion" />
@@ -71,7 +61,7 @@
       </div>
 
       <!-- Nota -->
-      <div class="pt-6 text-gray-700 text-sm space-y-2">
+      <!-- <div class="pt-6 text-gray-700 text-sm space-y-2">
         <p class="font-semibold">Nota:</p>
         <p>Esta cotización no implica la confirmación del servicio solicitado, ya que está sujeta a disponibilidad.</p>
         <ol class="list-decimal pl-6 space-y-1">
@@ -79,12 +69,12 @@
           <li>Be One SAS analizará la disponibilidad del lugar y servicios ofrecidos.</li>
           <li>Se enviará una respuesta de confirmación, cancelación o fechas disponibles.</li>
         </ol>
-      </div>
+      </div> -->
 
       <!-- Búsqueda y cantidad -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative border-t">
         <!-- Buscar Producto -->
-        <div>
+        <div class="mt-5">
           <label class="block text-gray-800 font-medium mb-1">Buscar Producto</label>
           <input type="text" v-model="searchProducto" @focus="mostrarLista = true" @blur="ocultarListaConRetraso"
             @input="filtrarProductos" placeholder="Buscar producto por nombre..."
@@ -101,7 +91,7 @@
         </div>
 
         <!-- Buscar Categoría -->
-        <div class="relative">
+        <div class="relative mt-5">
           <label class="block text-gray-800 font-medium mb-1">Filtrar por categoría</label>
           <input type="text" v-model="searchCategoria" @input="filtrarCategorias" @focus="mostrarListaFilter = true"
             placeholder="Buscar categoría..." class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800" />
@@ -117,14 +107,16 @@
         </div>
       </div>
 
+      <BarraInfo />
+
       <div class="flex gap-4 w-full align-center justify-end">
         <div class="w-full">
-          <label class="block text-gray-800 font-medium mb-1">Q Jornada</label>
+          <label class="block text-gray-800 font-medium mb-1">Q de Jornada</label>
           <input v-model="cotizacion.cantidadJornada" type="number" min="0"
             class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800" />
         </div>
         <div class="w-full">
-          <label class="block text-gray-800 font-medium mb-1">Cantidad</label>
+          <label class="block text-gray-800 font-medium mb-1">Q de producto</label>
           <input v-model="cotizacion.cantidadProducto" type="number" min="0"
             class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800" />
         </div>
@@ -132,7 +124,7 @@
 
         <button @click="abrirModal"
           class="bg-[#dbeafe] w-full min-w-[220px] hover:bg-blue-200 text-blue-600 font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2">
-          Agregar nuevo
+          Agregar producto de tercero
         </button>
 
 
@@ -233,10 +225,8 @@
       </div>
     </div>
 
-
-
     <ModalReutilizable :show="modalNuevoProducto" @close="cerrarModal">
-      <h2 class="text-xl font-bold text-blue-800 mb-4">Ingreso de producto no listado</h2>
+      <h2 class="text-xl font-bold text-blue-800 mb-4">Ingreso de producto de tercero</h2>
       <form @submit.prevent="guardarProducto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div v-for="(field, index) in campos" :key="index">
@@ -255,7 +245,6 @@
       </form>
     </ModalReutilizable>
 
-
   </div>
 </template>
 
@@ -269,8 +258,11 @@ import { getCustomer } from '../../services/customer.service';
 import ModalReutilizable from '../../components/modal/ModalReutilizable.vue';
 import { createQuotation, getQuotation } from '../../services/quotation.service';
 import ResumenCotizacion from '../../components/panels/ResumenCotizacion.vue';
+import ClienteFinalSelector from '../suppliers/ClienteFinalSelector.vue';
+import BarraInfo from '../../components/panels/BarraInfo.vue';
 
 const productos = ref([]);
+//const producto = ref()
 const quotation = ref([])
 const productosFiltrados = ref([]);
 const categoria = ref([]);
@@ -281,6 +273,9 @@ const productosTotal = ref(0);
 const mostrarLista = ref(false);
 const mostrarListaFilter = ref(false);
 const modalNuevoProducto = ref(false);
+
+const clienteSeleccionado = ref({})
+console.log(clienteSeleccionado.value)
 
 const cotizacion = reactive({
   numero: 117,
@@ -305,6 +300,16 @@ const cotizacion = reactive({
   cantidadProducto: 3,
   quotationStatusId: 1
 });
+
+/**
+ * !Corregir reference, es un numero de celular
+ * !Coregir la variable de mail
+ */
+watch(clienteSeleccionado, (nuevoCliente) => {
+  cotizacion.contacto = nuevoCliente.contact
+  cotizacion.correo = nuevoCliente.mail
+  cotizacion.celular  = nuevoCliente.reference
+})
 
 function abrirModal() {
   modalNuevoProducto.value = true;
@@ -417,14 +422,15 @@ const campos = [
   { id: 'idCatalogo', label: 'ID Cotizador', model: 'idCatalogo', type: 'number' },
   { id: 'verificarPrestacionProvExterno', label: 'Proveedor', model: 'verificarPrestacionProvExterno', type: 'text' },
   { id: 'nombre', label: 'Descripción producto', model: 'nombre', type: 'text' },
-  { id: 'nombre', label: 'Cantidad', model: 'nombre', type: 'text' },
+
+  { id: 'Cotización del proveedor', label: 'Cotización del proveedor', model: 'Cotización del proveedor', type: 'file' },
+  { id: 'Imagen del producto', label: 'Imagen del producto', model: 'Cotización del proveedor', type: 'file' },
+
   { id: 'cop', label: 'Costo del producto', model: 'cop', type: 'number' },
-  { id: 'valorCuadroCotizador', label: 'Soporte digital', model: 'valorCuadroCotizador', type: 'number' },
-  { id: 'linkFotoDispositivo', label: 'Imagen del producto', model: 'linkFotoDispositivo', type: 'text' },
   { id: 'dispositivo', label: 'Categoria', model: 'dispositivo', type: 'text' },
   { id: 'incluyeTransporteBogMde', label: 'Incluye Transporte Bog-Mde', model: 'incluyeTransporteBogMde', type: 'text' },
+  { id: 'Fecha de carga', label: 'Fecha de carga', model: 'Fecha de carga', type: 'text' },
 ]
-
 
 
 //Iniciar un cotización
