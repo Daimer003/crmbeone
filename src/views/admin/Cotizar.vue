@@ -39,7 +39,8 @@
           <InputLabel label="Fecha Inicio Evento" v-model="cotizacion.fechaInicioEvento" type="date" />
           <InputLabel label="Fecha Fin Evento" v-model="cotizacion.fechaFinEvento" type="date" />
           <InputLabel label="Ubicación del Evento" v-model="cotizacion.ubicacion" />
-          <InputLabel label="Link en Maps" v-model="cotizacion.linkMaps" />
+          
+          <MapSelector v-model="cotizacion.linkMaps" />
           <InputLabel label="Horario de Inicio" v-model="cotizacion.horarioInicio" type="time" />
           <InputLabel label="Horario de Finalización" v-model="cotizacion.horarioFin" type="time" />
           <InputLabel label="Número de Asistentes" v-model="cotizacion.asistentes" />
@@ -56,7 +57,15 @@
             </select>
           </div>
 
-          <InputLabel label="Tipo de Suelo" v-model="cotizacion.tipoSuelo" />
+             <div>
+            <label class="block text-gray-800 font-medium mb-1">Tipo de Suelo</label>
+            <select v-model="cotizacion.tipoSuelo"
+              class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800">
+              <option>Zona Cesped</option>
+              <option>Zona Dura</option>
+            </select>
+          </div>
+
         </div>
       </div>
 
@@ -107,7 +116,7 @@
         </div>
       </div>
 
-      <BarraInfo />
+      <BarraInfo :motores="selectedProduct.qMotores"  :amperios="selectedProduct.amperios" />
 
       <div class="flex gap-4 w-full align-center justify-end">
         <div class="w-full">
@@ -262,10 +271,11 @@ import ClienteFinalSelector from '../suppliers/ClienteFinalSelector.vue';
 import BarraInfo from '../../components/panels/BarraInfo.vue';
 import { useAuth } from '../../composables/useAuth';
 import { getCurrentISODate } from '../../utils/date';
+import MapSelector from '../../components/map/MapSelector.vue';
 
 const { user } = useAuth()
 const productos = ref([]);
-//const producto = ref()
+const selectedProduct = ref([])
 const quotation = ref([])
 const productosFiltrados = ref([]);
 const categoria = ref([]);
@@ -277,6 +287,7 @@ const mostrarLista = ref(false);
 const mostrarListaFilter = ref(false);
 const modalNuevoProducto = ref(false);
 const clienteSeleccionado = ref({})
+
 
 const cotizacion = reactive({
   numero: 117,
@@ -307,7 +318,6 @@ onMounted( async () => {
    cotizacion.fechaCotizacion = getCurrentISODate()
    cotizacion.agenteComercial = user.value.fullName
 })
-
 
 /**
  * !Corregir reference, es un numero de celular
@@ -386,6 +396,9 @@ const filtrarCategorias = () => {
 };
 
 const seleccionarProducto = (producto) => {
+  console.log(producto)
+
+  selectedProduct.value = producto
   searchProducto.value = producto.nombre;
   productosTotal.value = producto.total
   mostrarLista.value = false;
