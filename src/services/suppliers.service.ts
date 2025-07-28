@@ -22,6 +22,7 @@ export const getSuppliers = async () => {
 
 export const createSuppliers = async (data: any) => {
     try {
+     
         const response = await axios.post(
             "http://localhost:3000/suppliers",
             data,
@@ -38,3 +39,22 @@ export const createSuppliers = async (data: any) => {
         throw error; // ✅ Lanza el error para manejarlo donde se use
     }
 };
+
+export const updateSupplier = async (id: number, data: Object) => {
+    try {
+        const response = await axios.patch(
+            `http://localhost:3000/suppliers/${id}`,
+            data,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        return response;
+    } catch (error) {
+        console.error("Fallo el servicio para actualizar el cliente", error);
+        throw error;
+    }
+}

@@ -13,12 +13,14 @@ onMounted(async () => {
 
     const suppliers = await getSuppliers()
     data.value = suppliers.data
-    console.log(data.value)
+    /**
+     * !Corregir la variable email
+     */
     columns.value = [
       { label: 'Id', field: 'id' },
       { label: 'Nombre', field: 'name' },
       { label: 'Nit', field: 'nit' },
-      { label: 'Email', field: 'email' },
+      { label: 'Email', field: 'mail' },
       { label: 'Phone', field: 'contact' },
       { label: 'Referencia', field: 'reference' },
     ]

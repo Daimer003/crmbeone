@@ -8,7 +8,7 @@
 
       <!-- Datos Generales -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <InputLabel label="Fecha de Cotización" v-model="cotizacion.fechaCotizacion" type="date" />
+        <InputLabel label="Fecha de Cotización" v-model="cotizacion.fechaCotizacion" type="text" />
         <InputLabel label="Agente Comercial" v-model="cotizacion.agenteComercial" />
 
         <div>
@@ -260,7 +260,10 @@ import { createQuotation, getQuotation } from '../../services/quotation.service'
 import ResumenCotizacion from '../../components/panels/ResumenCotizacion.vue';
 import ClienteFinalSelector from '../suppliers/ClienteFinalSelector.vue';
 import BarraInfo from '../../components/panels/BarraInfo.vue';
+import { useAuth } from '../../composables/useAuth';
+import { getCurrentISODate } from '../../utils/date';
 
+const { user } = useAuth()
 const productos = ref([]);
 //const producto = ref()
 const quotation = ref([])
@@ -273,9 +276,7 @@ const productosTotal = ref(0);
 const mostrarLista = ref(false);
 const mostrarListaFilter = ref(false);
 const modalNuevoProducto = ref(false);
-
 const clienteSeleccionado = ref({})
-console.log(clienteSeleccionado.value)
 
 const cotizacion = reactive({
   numero: 117,
@@ -301,9 +302,16 @@ const cotizacion = reactive({
   quotationStatusId: 1
 });
 
+//Auto completa el campo Agente comercial
+onMounted( async () => {
+   cotizacion.fechaCotizacion = getCurrentISODate()
+   cotizacion.agenteComercial = user.value.fullName
+})
+
+
 /**
  * !Corregir reference, es un numero de celular
- * !Coregir la variable de mail
+ * !Coregir la variable de mail 
  */
 watch(clienteSeleccionado, (nuevoCliente) => {
   cotizacion.contacto = nuevoCliente.contact
