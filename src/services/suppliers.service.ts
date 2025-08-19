@@ -3,7 +3,7 @@ import axios from "axios";
 export const getSuppliers = async () => {
     try {
         const response = await axios.get(
-            "http://localhost:3000/suppliers",
+            "http://localhost:3000/client",
 
             {
                 headers: {
@@ -20,11 +20,11 @@ export const getSuppliers = async () => {
 };
 
 
-export const createSuppliers = async (data: any) => {
+export const createClient = async (data: any) => {
     try {
      
         const response = await axios.post(
-            "http://localhost:3000/suppliers",
+            "http://localhost:3000/client",
             data,
             {
                 headers: {
@@ -40,10 +40,10 @@ export const createSuppliers = async (data: any) => {
     }
 };
 
-export const updateSupplier = async (id: number, data: Object) => {
+export const updateClient = async (id: number, data: Object) => {
     try {
         const response = await axios.patch(
-            `http://localhost:3000/suppliers/${id}`,
+            `http://localhost:3000/client/${id}`,
             data,
             {
                 headers: {

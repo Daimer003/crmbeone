@@ -3,7 +3,7 @@ import axios from "axios";
 export const getCustomer = async () => {
     try {
         const response = await axios.get(
-            "http://localhost:3000/customer",
+            "http://localhost:3000/clients",
 
             {
                 headers: {

@@ -1,23 +1,15 @@
 <template>
-<div>
-  <label class="block text-gray-800 font-medium mb-1">Cliente final</label>
-  <div class="relative flex items-center gap-2">
-    <input
-      v-model="search"
-      @focus="openModal = true"
-      placeholder="Buscar cliente..."
-      class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800 cursor-pointer"
-      readonly
-    />
-    <button
-      v-if="props.dataClient && props.dataClient.name"
-      @click="abrirModalEdicion"
-      class="h-full min-h-[42px] max-w-[40px] min-w-[40px] bg-[#dbeafe] hover:bg-[#bfdbfe] flex items-center justify-center rounded"
-      title="Editar cliente"
-    >
-      <IconEdit class="text-black cursor-pointer" />
-    </button>
-  </div>
+  <div>
+    <label class="block text-gray-800 font-medium mb-1">Cliente final</label>
+    <div class="relative flex items-center gap-2">
+      <input v-model="search" @focus="openModal = true" placeholder="Buscar cliente..."
+        class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800 cursor-pointer" readonly />
+      <button v-if="props.dataClient && props.dataClient.name" @click="abrirModalEdicion"
+        class="h-full min-h-[42px] max-w-[40px] min-w-[40px] bg-[#dbeafe] hover:bg-[#bfdbfe] flex items-center justify-center rounded"
+        title="Editar cliente">
+        <IconEdit class="text-black cursor-pointer" />
+      </button>
+    </div>
 
 
     <!-- Modal de búsqueda/creación -->
@@ -41,9 +33,25 @@
         <div class="space-y-2 mb-4" v-if="!filteredClientes.length">
           <input v-model="nuevoCliente.name" placeholder="Nombre" class="w-full border px-3 py-2 rounded" />
           <input v-model="nuevoCliente.nit" placeholder="NIT" class="w-full border px-3 py-2 rounded" />
-          <input v-model="nuevoCliente.mail" placeholder="Correo electrónico" class="w-full border px-3 py-2 rounded" />
-          <input v-model="nuevoCliente.contact" placeholder="Contacto" class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.email" placeholder="Correo electrónico"
+            class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.phone" placeholder="Contacto" class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.document" placeholder="Documento" class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.contactName" placeholder="Contacto de referencia"
+            class="w-full border px-3 py-2 rounded" />
           <input v-model="nuevoCliente.reference" placeholder="Referencia" class="w-full border px-3 py-2 rounded" />
+
+          <!-- Selector DIRECTO / INDIRECTO -->
+          <div class="flex items-center gap-4 mt-3">
+            <label class="flex items-center gap-1">
+              <input type="radio" value="INDIRECTO" v-model="nuevoCliente.type" />
+              INDIRECTO
+            </label>
+            <label class="flex items-center gap-1">
+              <input type="radio" value="DIRECTO" v-model="nuevoCliente.type" />
+              DIRECTO
+            </label>
+          </div>
         </div>
 
         <div class="mt-4 text-right">
@@ -63,8 +71,12 @@
         <div class="space-y-2">
           <input v-model="nuevoCliente.name" placeholder="Nombre" class="w-full border px-3 py-2 rounded" />
           <input v-model="nuevoCliente.nit" placeholder="NIT" class="w-full border px-3 py-2 rounded" />
-          <input v-model="nuevoCliente.mail" placeholder="Correo electrónico" class="w-full border px-3 py-2 rounded" />
-          <input v-model="nuevoCliente.contact" placeholder="Contacto" class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.email" placeholder="Correo electrónico"
+            class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.phone" placeholder="Contacto" class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.document" placeholder="Documento" class="w-full border px-3 py-2 rounded" />
+          <input v-model="nuevoCliente.contactName" placeholder="Contacto de referencia"
+            class="w-full border px-3 py-2 rounded" />
           <input v-model="nuevoCliente.reference" placeholder="Referencia" class="w-full border px-3 py-2 rounded" />
         </div>
 
@@ -82,7 +94,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import ModalReutilizable from '@/components/modal/ModalReutilizable.vue'
-import { createSuppliers, getSuppliers, updateSupplier } from '../../services/suppliers.service'
+import { createClient, getSuppliers, updateClient } from '../../services/suppliers.service'
 import IconEdit from '../../Icons/IconEdit.vue'
 
 const props = defineProps({
@@ -100,9 +112,12 @@ const search = ref('')
 const nuevoCliente = ref({
   name: undefined,
   nit: undefined,
-  mail: undefined,
-  contact: undefined,
-  reference: undefined
+  email: undefined,
+  phone: undefined,
+  document: undefined,
+  contactName: undefined,
+  reference: undefined,
+  type: 'INDIRECTO'
 })
 
 // Obtener lista de clientes
@@ -154,7 +169,7 @@ function seleccionarCliente(cliente) {
 async function agregarNuevoCliente() {
   if (nuevoCliente.value.name.trim()) {
     try {
-      const response = await createSuppliers(nuevoCliente.value)
+      const response = await createClient(nuevoCliente.value)
       const clienteCreado = response.data
 
       emit('update:modelValue', clienteCreado.name)
@@ -180,7 +195,7 @@ function abrirModalEdicion() {
 // Actualizar cliente
 async function actualizarCliente() {
   try {
-    const response = await updateSupplier(nuevoCliente.value.id, nuevoCliente.value)
+    const response = await updateClient(nuevoCliente.value.id, nuevoCliente.value)
     const clienteActualizado = response.data
 
     // Actualizar lista

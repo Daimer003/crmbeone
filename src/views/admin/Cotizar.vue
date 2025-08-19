@@ -14,13 +14,12 @@
         <div>
           <label class="block text-gray-800 font-medium mb-1">Cliente</label>
           <select v-model="cotizacion.cliente" class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800">
-            <option>Cliente directo</option>
-            <option>Compensar</option>
-            <option>Colsubsidio</option>
-            <option>Cafam</option>
-            <option>Comfama</option>
-            <option>Comfenalco</option>
-            <option>Comfachocó</option>
+            <option value="T">Cliente directo</option>
+            <option value="valorListaCompensar">Compensar</option>
+            <option value="valorListaColsubsidio">Colsubsidio</option>
+            <option value="valorListaCAFAM">Cafam</option>
+            <option value="alorListaComfama">Comfama</option>
+            <option value="valorListaConfenalco">Comfenalco</option>
           </select>
         </div>
 
@@ -39,7 +38,7 @@
           <InputLabel label="Fecha Inicio Evento" v-model="cotizacion.fechaInicioEvento" type="date" />
           <InputLabel label="Fecha Fin Evento" v-model="cotizacion.fechaFinEvento" type="date" />
           <InputLabel label="Ubicación del Evento" v-model="cotizacion.ubicacion" />
-          
+
           <MapSelector v-model="cotizacion.linkMaps" />
           <InputLabel label="Horario de Inicio" v-model="cotizacion.horarioInicio" type="time" />
           <InputLabel label="Horario de Finalización" v-model="cotizacion.horarioFin" type="time" />
@@ -57,7 +56,7 @@
             </select>
           </div>
 
-             <div>
+          <div>
             <label class="block text-gray-800 font-medium mb-1">Tipo de Suelo</label>
             <select v-model="cotizacion.tipoSuelo"
               class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800">
@@ -90,11 +89,20 @@
             class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800" />
 
           <ul v-if="mostrarLista && productosFiltrados.length"
-            class="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-auto">
+            class="absolute z-10 w-full bg-white border border-gray-300 rounded mt-1 max-h-60 overflow-auto ">
             <li v-for="producto in productosFiltrados" :key="producto.id"
-              @mousedown.prevent="seleccionarProducto(producto)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              {{ producto.dispositivo }} /
-              <span class="text-gray-400 text-[12px]">{{ producto.descripcion }}</span>
+              @mousedown.prevent="seleccionarProducto(producto)"
+              class="flex px-4 py-2 hover:bg-gray-100 cursor-pointer justify-between">
+
+              <div>
+                {{ producto.dispositivo }} /
+                <span class="text-gray-400 text-[12px]">{{ producto.descripcion }}</span>
+              </div>
+
+              <div class="flex flex-col gap-2">
+                <Badge :estado="producto.availabilityStatus" />
+                <ConditionBadge :condition="producto.conditionStatus" />
+              </div>
             </li>
           </ul>
         </div>
@@ -116,7 +124,7 @@
         </div>
       </div>
 
-      <BarraInfo :motores="selectedProduct.qMotores"  :amperios="selectedProduct.amperios" />
+      <BarraInfo :motores="selectedProduct.qMotores" :amperios="selectedProduct.amperios" :precio="unitPrice" />
 
       <div class="flex gap-4 w-full align-center justify-end">
         <div class="w-full">
@@ -137,7 +145,7 @@
         </button>
 
 
-        <button @click="startQuote"
+        <button @click="addProduct"
           class="bg-blue-600 w-full min-w-[220px] hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2">
           Agregar
         </button>
@@ -149,6 +157,13 @@
       <ResumenCotizacion :subtotal="100000" :iva="19000" :valorTotal="119000" :subtotalDescuento="90000"
         :ivaDescuento="17100" :valorTotalDescuento="107100" :subtotalFinal="95000" :ivaFinal="18050"
         :valorTotalFinal="113050" />
+
+      <div class="mt-3">
+        <button @click="startQuote"
+          class="bg-blue-600 w-full min-w-[220px] hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow flex items-center justify-center gap-2">
+          Generar la cotización
+        </button>
+      </div>
     </div>
 
     <!-- Tabla de cotizaciones -->
@@ -159,75 +174,32 @@
         <table class="min-w-[1200px] table-auto border-separate border-spacing-y-3">
           <thead>
             <tr class="text-left text-sm text-gray-600">
-              <th class="px-4 py-2">ID</th>
-              <th class="px-4 py-2">Número</th>
-              <th class="px-4 py-2">Fecha Cotización</th>
+              <th class="px-4 py-2">Id</th>
+
+              <th class="px-4 py-2">Q de jornada</th>
+              <th class="px-4 py-2">Q de producto</th>
+              <th class="px-4 py-2">Categoria</th>
+              <th class="px-4 py-2">Dispositivo</th>
+              <th class="px-4 py-2">Descripción</th>
+              <th class="px-4 py-2">Incluye transporte</th>
+              <th class="px-4 py-2">Medidas</th>
+              <th class="px-4 py-2">Link de foto</th>
               <th class="px-4 py-2">Estado</th>
-              <th class="px-4 py-2">Agente Comercial</th>
-              <th class="px-4 py-2">Cliente</th>
-              <th class="px-4 py-2">Empresa</th>
-              <th class="px-4 py-2">Contacto</th>
-              <th class="px-4 py-2">Correo</th>
-              <th class="px-4 py-2">Celular</th>
-              <th class="px-4 py-2">Inicio Evento</th>
-              <th class="px-4 py-2">Fin Evento</th>
-              <th class="px-4 py-2">Ubicación</th>
-              <th class="px-4 py-2">Link Maps</th>
-              <th class="px-4 py-2">Horario Inicio</th>
-              <th class="px-4 py-2">Horario Fin</th>
-              <th class="px-4 py-2">Asistentes</th>
-              <th class="px-4 py-2">Vigencia</th>
-              <th class="px-4 py-2">Unidad Ejecución</th>
-              <th class="px-4 py-2">Tipo Suelo</th>
-              <th class="px-4 py-2">Cant. Jornadas</th>
-              <th class="px-4 py-2">Cant. Productos</th>
-              <th class="px-4 py-2">Urgencia</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in quotation" :key="item.id" class="bg-gray-50 rounded-lg shadow-sm text-[12px]">
-              <td class="px-4 py-3 text-gray-800 font-medium">{{ item.id }}</td>
-              <td class="px-4 py-3">{{ item.numero }}</td>
-              <td class="px-4 py-3">{{ item.fechaCotizacion }}</td>
-              <td class="px-4 py-3">
-                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold" :class="{
-                  'bg-yellow-100 text-yellow-800': item.quotationStatus.id === 1,
-                  'bg-blue-100 text-blue-800': item.quotationStatus.id === 2,
-                  'bg-green-100 text-green-800': item.quotationStatus.id === 3,
-                }">
-                  {{ item.quotationStatus.name }}
-                </span>
-              </td>
-              <td class="px-4 py-3">{{ item.agenteComercial }}</td>
-              <td class="px-4 py-3">{{ item.cliente }}</td>
-              <td class="px-4 py-3">{{ item.empresa }}</td>
-              <td class="px-4 py-3">{{ item.contacto }}</td>
-              <td class="px-4 py-3">{{ item.correo }}</td>
-              <td class="px-4 py-3">{{ item.celular }}</td>
-              <td class="px-4 py-3">{{ item.fechaInicioEvento }}</td>
-              <td class="px-4 py-3">{{ item.fechaFinEvento }}</td>
-              <td class="px-4 py-3">{{ item.ubicacion }}</td>
-              <td class="px-4 py-3">
-                <a :href="item.linkMaps" class="text-blue-600 underline" target="_blank">{{ item.linkMaps }}</a>
-              </td>
-              <td class="px-4 py-3">{{ item.horarioInicio }}</td>
-              <td class="px-4 py-3">{{ item.horarioFin }}</td>
-              <td class="px-4 py-3">{{ item.asistentes }}</td>
-              <td class="px-4 py-3">{{ item.vigencia }}</td>
-              <td class="px-4 py-3">{{ item.unidadEjecucion }}</td>
-              <td class="px-4 py-3">{{ item.tipoSuelo }}</td>
-              <td class="px-4 py-3">{{ item.cantidadJornada }}</td>
-              <td class="px-4 py-3">{{ item.cantidadProducto }}</td>
+            <tr v-for="(item, index) in items" :key="index" class="bg-gray-50 rounded-lg shadow-sm text-[12px]">
+              <td class="px-4 py-3 text-gray-800 font-medium">{{ index + 1 }}</td>
 
-              <td class="px-4 py-3">
-                <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold" :class="{
-                  'bg-red-100 text-red-800': item.urgencia === 'Alta',
-                  'bg-orange-100 text-orange-800': item.urgencia === 'Media',
-                  'bg-green-100 text-green-800': item.urgencia === 'Baja'
-                }">
-                  {{ item.urgencia }}
-                </span>
-              </td>
+              <td class="px-4 py-3">{{ item.qProducto }}</td>
+              <td class="px-4 py-3">{{ item.qProducto }}</td>
+              <td class="px-4 py-3">{{ item.category }}</td>
+              <td class="px-4 py-3">{{ item.dispositivo }}</td>
+              <td class="px-4 py-3">{{ item.descripcion }}</td>
+              <td class="px-4 py-3">{{ item.incluyeTransporte }}</td>
+              <td class="px-4 py-3">{{ item.medidas }}</td>
+              <td class="px-4 py-3"><a :href="item.linkFoto" target="_blank">Link</a></td>
+              <td class="px-4 py-3"><Badge :estado=" item.estado" /></td>
             </tr>
           </tbody>
         </table>
@@ -258,7 +230,6 @@
 </template>
 
 
-
 <script setup>
 import InputLabel from '@/components/input/InputLabel.vue';
 import { ref, reactive, onMounted, watch } from 'vue';
@@ -270,8 +241,11 @@ import ResumenCotizacion from '../../components/panels/ResumenCotizacion.vue';
 import ClienteFinalSelector from '../suppliers/ClienteFinalSelector.vue';
 import BarraInfo from '../../components/panels/BarraInfo.vue';
 import { useAuth } from '../../composables/useAuth';
-import { getCurrentISODate } from '../../utils/date';
+import { formatDateTime, formatIsoToCustom, getCurrentISODate } from '../../utils/date';
 import MapSelector from '../../components/map/MapSelector.vue';
+import { searchByKey } from '../../utils/filter';
+import Badge from '../../components/badge/Badge.vue';
+import ConditionBadge from '../../components/badge/ConditionBadge.vue';
 
 const { user } = useAuth()
 const productos = ref([]);
@@ -287,23 +261,26 @@ const mostrarLista = ref(false);
 const mostrarListaFilter = ref(false);
 const modalNuevoProducto = ref(false);
 const clienteSeleccionado = ref({})
+const unitPrice = ref(0)
+
+const items = ref([])
 
 
 const cotizacion = reactive({
   numero: 117,
-  fechaCotizacion: "2025-06-30T12:00:00.000Z",
+  fechaCotizacion: "",
   agenteComercial: '',
   cliente: '',
   empresa: '',
   contacto: '',
   correo: '',
   celular: '',
-  fechaInicioEvento: "2025-07-05T08:00:00.000Z",
-  fechaFinEvento: "2025-07-06T17:00:00.000Z",
+  fechaInicioEvento: "",
+  fechaFinEvento: "",
   ubicacion: '',
   linkMaps: '',
-  horarioInicio: '',
-  horarioFin: '',
+  horarioInicio: '00:00',
+  horarioFin: '00:00',
   asistentes: 10,
   vigencia: '15 días',
   unidadEjecucion: 'Nivel Nacional',
@@ -313,10 +290,14 @@ const cotizacion = reactive({
   quotationStatusId: 1
 });
 
+const addProductBox = ref({
+
+})
+
 //Auto completa el campo Agente comercial
-onMounted( async () => {
-   cotizacion.fechaCotizacion = getCurrentISODate()
-   cotizacion.agenteComercial = user.value.fullName
+onMounted(async () => {
+  cotizacion.fechaCotizacion = formatDateTime(getCurrentISODate())
+  cotizacion.agenteComercial = user.value.fullName
 })
 
 /**
@@ -324,9 +305,10 @@ onMounted( async () => {
  * !Coregir la variable de mail 
  */
 watch(clienteSeleccionado, (nuevoCliente) => {
-  cotizacion.contacto = nuevoCliente.contact
-  cotizacion.correo = nuevoCliente.mail
-  cotizacion.celular  = nuevoCliente.reference
+  console.log(nuevoCliente)
+  cotizacion.contacto = nuevoCliente.phone
+  cotizacion.correo = nuevoCliente.email
+  cotizacion.celular = nuevoCliente.reference
 })
 
 function abrirModal() {
@@ -362,11 +344,15 @@ onMounted(async () => {
   }
 });
 
+
+/**
+ * Cotizaciones
+ */
 const myQuotes = async () => {
   try {
     const response = await getQuotation()
     quotation.value = response.data
-    console.log(response)
+    console.log(response.data)
   } catch (error) {
     console.error('Error al cargar la cotizaciones:', error);
   }
@@ -388,6 +374,7 @@ const filtrarProductos = () => {
   });
 };
 
+//Las categorias de los productos
 const filtrarCategorias = () => {
   const term = searchCategoria.value.toLowerCase().trim();
   categoriasFiltradas.value = categoria.value.filter((c) =>
@@ -395,12 +382,15 @@ const filtrarCategorias = () => {
   );
 };
 
+//Producto seleccionado 
 const seleccionarProducto = (producto) => {
-  console.log(producto)
-
   selectedProduct.value = producto
   searchProducto.value = producto.nombre;
   productosTotal.value = producto.total
+
+  //Filtra el valor unitario del cliente que corresponde
+  unitPrice.value = searchByKey(cotizacion.cliente, producto)
+
   mostrarLista.value = false;
 };
 
@@ -453,11 +443,70 @@ const campos = [
   { id: 'Fecha de carga', label: 'Fecha de carga', model: 'Fecha de carga', type: 'text' },
 ]
 
+//Iniciar un cotización
+const addProduct = async () => {
+  try {
+    console.log(selectedProduct.value)
+    items.value.push({
+      quotationId: 7,
+      productId: selectedProduct.value.id,
+      qProducto: 2,
+      category: selectedProduct.value.categoria,
+      dispositivo:  selectedProduct.value.dispositivo,
+      descripcion:  selectedProduct.value.descripcion,
+      incluyeTransporte: selectedProduct.value.incluyeTransporteBogMde,
+      medidas: selectedProduct.value.medidas,
+      linkFoto: selectedProduct.value.linkFotoDispositivo,
+      estado: selectedProduct.value.availabilityStatus,
+    })
+
+
+    console.log(items)
+    searchProducto.value = ''
+    // const response = await createQuotation(cotizacion)
+    // console.log(response)
+
+
+  } catch (error) {
+    throw Error('La creacion de la cotización fallo')
+  }
+}
 
 //Iniciar un cotización
 const startQuote = async () => {
+
+
+
+
   try {
-    const response = await createQuotation(cotizacion)
+    const data = {
+      numero: cotizacion.numero,
+      fechaCotizacion: cotizacion.fechaCotizacion,
+      agenteComercial: cotizacion.agenteComercial,
+      cliente: cotizacion.cliente,
+      empresa: cotizacion.empresa,
+      contacto: cotizacion.contacto,
+      correo: cotizacion.correo,
+      celular: cotizacion.celular,
+      fechaInicioEvento: formatDateTime(cotizacion.fechaInicioEvento),
+      fechaFinEvento: formatDateTime(cotizacion.fechaFinEvento),
+      ubicacion: cotizacion.ubicacion,
+      linkMaps: cotizacion.linkMaps,
+      horarioInicio: cotizacion.horarioInicio,
+      horarioFin: cotizacion.horarioFin,
+      asistentes: cotizacion.asistentes,
+      vigencia: cotizacion.vigencia,
+      unidadEjecucion: cotizacion.unidadEjecucion,
+      tipoSuelo: cotizacion.tipoSuelo,
+      cantidadJornada: cotizacion.cantidadJornada,
+      cantidadProducto: cotizacion.cantidadProducto,
+      quotationStatusId: cotizacion.quotationStatusId,
+      items: [
+        { productId: selectedProduct.value.id, quantity: 2, unitPrice: 2000, total: 4000 },
+      ]
+    }
+
+    const response = await createQuotation(data)
     console.log(response)
 
     myQuotes()

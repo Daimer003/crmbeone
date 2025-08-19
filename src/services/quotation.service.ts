@@ -3,7 +3,7 @@ import axios from "axios";
 export const getQuotation = async () => {
     try {
         const response = await axios.get(
-            "http://localhost:3000/quotations",
+            "http://localhost:3000/quotation-draft-item",
 
             {
                 headers: {
@@ -27,6 +27,7 @@ function limpiarCotizacion(data: Record<string, any>) {
 
 export const createQuotation = async (cotizacion: any) => {
     try {
+        console.log(cotizacion)
         const data = limpiarCotizacion(cotizacion)
 
         const response = await axios.post(
@@ -44,3 +45,4 @@ export const createQuotation = async (cotizacion: any) => {
         throw error; // ✅ Lanza el error para manejarlo donde se use
     }
 };
+
