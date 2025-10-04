@@ -8,52 +8,29 @@
 
       <nav class="flex flex-col space-y-6 text-gray-700 font-medium">
         <MenuItem icon="Administrative" label="Home" route="/" />
-        <MenuItem
-          icon="Administrative"
-          label="Dpto Comercial"
-          :items="[
-            { name: 'Cotizar', route: '/admin/cotizar' },
-            { name: 'Consultar', route: '/admin/precios' },
-            { name: 'Lista de precios', route: '/admin/precios' },
-            { name: 'Lista de precios de terceros', route: '/admin/precios' },
-            { name: 'Proveedores', route: '/suppliers/suppliers' },
-            { name: 'Customer', route: '/customer/customer' },
-            { name: 'Reportes', route: '/admin/proveedores' }, 
-        
-          ]"
-          :is-open="openMenu === 'Dpto Comercial'"
-          @toggle="toggleMenu('Dpto Comercial')"
-        />
-        <MenuItem
-          icon="Operational"
-          label="Dpto Operativo"
-          :items="[
-            { name: 'Reporte diario', route: '/operativa/reporte' },
-            { name: 'Check-ins', route: '/operativa/checkins' },
-          ]"
-          :is-open="openMenu === 'Dpto Operativo'"
-          @toggle="toggleMenu('Dpto Operativo')"
-        />
-        <MenuItem
-          icon="User"
-          label="Departamento de personal"
-          :items="[
-            { name: 'Listado', route: '/users/list' },
-            { name: 'Roles', route: '/users/roles' },
-          ]"
-          :is-open="openMenu === 'Departamento de personal'"
-          @toggle="toggleMenu('Departamento de personal')"
-        />
-        <MenuItem
-          icon="User"
-          label="Usuarios"
-          :items="[
-            { name: 'Listado', route: '/users/list' },
-            { name: 'Roles', route: '/users/roles' },
-          ]"
-          :is-open="openMenu === 'Usuarios'"
-          @toggle="toggleMenu('Usuarios')"
-        />
+        <MenuItem icon="Administrative" label="Dpto Comercial" :items="[
+          { name: 'Cotizar', route: '/admin/cotizar' },
+          { name: 'Ver cotizaciones', route: '/admin/ver-cotizaciones' },
+          { name: 'Consultar', route: '/admin/precios' },
+          { name: 'Lista de precios', route: '/admin/precios' },
+          { name: 'Lista de precios de terceros', route: '/admin/precios' },
+          { name: 'Proveedores', route: '/suppliers/suppliers' },
+          { name: 'Customer', route: '/customer/customer' },
+          { name: 'Reportes', route: '/admin/proveedores' },
+
+        ]" :is-open="openMenu === 'Dpto Comercial'" @toggle="toggleMenu('Dpto Comercial')" />
+        <MenuItem icon="Operational" label="Dpto Operativo" :items="[
+          { name: 'Reporte diario', route: '/operativa/reporte' },
+          { name: 'Check-ins', route: '/operativa/checkins' },
+        ]" :is-open="openMenu === 'Dpto Operativo'" @toggle="toggleMenu('Dpto Operativo')" />
+        <MenuItem icon="User" label="Departamento de personal" :items="[
+          { name: 'Listado', route: '/users/list' },
+          { name: 'Roles', route: '/users/roles' },
+        ]" :is-open="openMenu === 'Departamento de personal'" @toggle="toggleMenu('Departamento de personal')" />
+        <MenuItem icon="User" label="Usuarios" :items="[
+          { name: 'Listado', route: '/users/list' },
+          { name: 'Roles', route: '/users/roles' },
+        ]" :is-open="openMenu === 'Usuarios'" @toggle="toggleMenu('Usuarios')" />
       </nav>
     </div>
 

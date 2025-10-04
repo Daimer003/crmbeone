@@ -21,7 +21,7 @@ const routes = [
         component: () => import("@/views/admin/ListaPrecios.vue"),
       },
       {
-        path: "admin/cotizar",
+        path: "admin/cotizar/:id?",
         name: "Cotizar",
         component: () => import("@/views/admin/Cotizar.vue"),
       },
@@ -34,6 +34,11 @@ const routes = [
         path: "users/list",
         name: "UsersList",
         component: () => import("@/views/users/List.vue"),
+      },
+          {
+        path: "/admin/ver-cotizaciones",
+        name: "VerCotizaciones",
+        component: () => import("@/views/admin/VerCotizaciones.vue"),
       },
       {
         path: "customer/customer",

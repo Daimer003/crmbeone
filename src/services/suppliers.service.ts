@@ -14,7 +14,6 @@ export const getSuppliers = async () => {
 
         return response;
     } catch (error) {
-        console.error("Fallo el servicio para obtener los clientes", error);
         throw error; // ✅ Lanza el error para manejarlo donde se use
     }
 };
@@ -35,7 +34,6 @@ export const createClient = async (data: any) => {
 
         return response;
     } catch (error) {
-        console.error("Fallo el servicio para obtener los clientes", error);
         throw error; // ✅ Lanza el error para manejarlo donde se use
     }
 };
@@ -54,7 +52,6 @@ export const updateClient = async (id: number, data: Object) => {
 
         return response;
     } catch (error) {
-        console.error("Fallo el servicio para actualizar el cliente", error);
         throw error;
     }
 }

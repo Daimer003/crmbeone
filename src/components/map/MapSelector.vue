@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block mb-1 text-sm font-semibold text-gray-700">Ubicación en Maps</label>
+    <label class="block mb-1 text-sm font-sm text-sm text-gray-700">Ubicación en Maps</label>
 
     <input
       type="text"

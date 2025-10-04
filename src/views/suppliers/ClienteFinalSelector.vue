@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block text-gray-800 font-medium mb-1">Cliente final</label>
+    <label class="block text-gray-800 font-sm text-sm mb-1">Cliente final</label>
     <div class="relative flex items-center gap-2">
       <input v-model="search" @focus="openModal = true" placeholder="Buscar cliente..."
         class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800 cursor-pointer" readonly />

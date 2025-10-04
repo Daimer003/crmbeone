@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block text-gray-800 font-medium mb-1">{{ label }}</label>
+    <label class="block text-gray-800 font-sm mb-1 text-sm">{{ label }}</label>
     <input
       :type="type"
       v-model="inputValue"
