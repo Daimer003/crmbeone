@@ -9,28 +9,52 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue'
 
-const props = defineProps({
-  label: String,
-  modelValue: [String, Number],
-  type: {
-    type: String,
-    default: 'text'
+interface Props {
+  label: string
+  modelValue: string | number | null
+  type?: 'text' | 'date' | 'time'
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string | number): void
+}>()
+
+const inputValue = ref<string>('')
+
+// Función para formatear valores entrantes
+const formatValue = (val: string | number | null) => {
+  if (!val) return ''
+
+  if (props.type === 'date') {
+    // Formato de la DB: "2025-10-17T00:00:00.000Z"
+    const date = new Date(val as string)
+    return date.toISOString().split('T')[0] // => "2025-10-17"
   }
-})
 
-const emit = defineEmits(['update:modelValue'])
+  if (props.type === 'time') {
+    // Si llega algo como "12:00" o "12:00:00"
+    return (val as string).slice(0, 5)
+  }
 
-const inputValue = ref(props.modelValue ?? '')
+  return String(val)
+}
 
-// Escuchar cambios del padre
-watch(() => props.modelValue, val => {
-  inputValue.value = val ?? ''
-})
+// Inicializar
+inputValue.value = formatValue(props.modelValue)
 
-// Emitir cambios al padre
+// Actualizar cuando cambie el valor desde el padre
+watch(
+  () => props.modelValue,
+  val => {
+    inputValue.value = formatValue(val)
+  }
+)
+
+// Emitir cambios hacia el padre
 watch(inputValue, val => {
   emit('update:modelValue', val)
 })

@@ -46,18 +46,7 @@
         <InputLabel label="Fecha de Cotización" v-model="cotizacion.fechaCotizacion" type="text" />
         <InputLabel label="Agente Comercial" v-model="cotizacion.agenteComercial" />
 
-        <div>
-          <label class="block text-gray-800 font-sm text-sm mb-1">Cliente</label>
-          <select v-model="cotizacion.cliente" class="w-full border border-gray-300 rounded px-3 py-2 text-gray-800">
-            <option value="T">Cliente directo</option>
-            <option value="valorListaCompensar">Compensar</option>
-            <option value="valorListaColsubsidio">Colsubsidio</option>
-            <option value="valorListaCAFAM">Cafam</option>
-            <option value="alorListaComfama">Comfama</option>
-            <option value="valorListaConfenalco">Comfenalco</option>
-          </select>
-        </div>
-
+        <ClientsSelector  v-model="cotizacion.cliente" v-model:dataClient="myClienteSeleccionado" />
         <ClienteFinalSelector v-model="cotizacion.empresa" v-model:dataClient="clienteSeleccionado" />
 
         <InputLabel label="Contacto" v-model="cotizacion.contacto" />
@@ -226,7 +215,6 @@
           <tbody>
             <tr v-for="(item, index) in items" :key="index" class="bg-gray-50 rounded-lg shadow-sm text-[12px]">
               <td class="px-4 py-3 text-gray-800 font-medium">{{ index + 1 }}</td>
-
               <td class="px-4 py-3">{{ item.cantidadJornada }}</td>
               <td class="px-4 py-3">{{ item.cantidadProducto }}</td>
               <td class="px-4 py-3">{{ item.category }}</td>
@@ -286,6 +274,7 @@ import { searchByKey } from '../../utils/filter';
 import Badge from '../../components/badge/Badge.vue';
 import ConditionBadge from '../../components/badge/ConditionBadge.vue';
 import { useRoute } from 'vue-router';
+import ClientsSelector from '../suppliers/ClientsSelector.vue';
 
 const route = useRoute();
 const id = route.params.id || null;
@@ -305,6 +294,7 @@ const mostrarLista = ref(false);
 const mostrarListaFilter = ref(false);
 const modalNuevoProducto = ref(false);
 const clienteSeleccionado = ref({})
+const myClienteSeleccionado = ref({})
 const unitPrice = ref(0)
 
 const quotations = ref([])
@@ -403,7 +393,7 @@ const seleccionarProducto = (producto) => {
   productosTotal.value = producto.valorListaCompensar
 
   //Filtra el valor unitario del cliente que corresponde
-  unitPrice.value = searchByKey(cotizacion.cliente, producto)
+  unitPrice.value = searchByKey("valorListaCompensar", producto)
 
   mostrarLista.value = false;
 };
@@ -489,7 +479,7 @@ const startQuote = async () => {
       numero: cotizacion.numero,
       fechaCotizacion: cotizacion.fechaCotizacion,
       agenteComercial: cotizacion.agenteComercial,
-      cliente: cotizacion.cliente,
+      clienteId: 3,
       empresa: cotizacion.empresa,
       contacto: cotizacion.contacto,
       correo: cotizacion.correo,
@@ -531,6 +521,7 @@ const getCotizacion = async () => {
     cotizacion.cliente = data.cliente;
     cotizacion.celular = data.celular;
     cotizacion.empresa = data.empresa;
+     cotizacion.cliente = data.cliente ? data?.cliente.name : '';
     cotizacion.contacto = data.contacto;
     cotizacion.correo = data.correo;
     cotizacion.fechaInicioEvento = data.fechaInicioEvento;
@@ -548,6 +539,8 @@ const getCotizacion = async () => {
     cotizacion.quotationStatusId = data.quotationStatusId;
 
     items.value = data.items || [];
+
+    console.log("Cotización cargada para edición:", data);
   } catch (error) {
     console.error("Error al cargar cotización", error);
   }

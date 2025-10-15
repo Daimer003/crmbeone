@@ -2,7 +2,6 @@
 import { ref, onMounted } from "vue";
 import { getQuotations } from "../../services/quotation.service";
 import Badge from "../../components/badge/Badge.vue";
-import ModalReutilizable from "../../components/modal/ModalReutilizable.vue";
 import { useRouter } from "vue-router";
 
 const { push } = useRouter()
@@ -28,6 +27,7 @@ function selectVersion(version) {
 const loadQuotations = async () => {
   try {
     const response = await getQuotations();
+    console.log("Cotizaciones cargadas:", response);
     quotations.value = response.data;
   } catch (error) {
     console.error("Error cargando cotizaciones:", error);
@@ -109,7 +109,7 @@ const seeTheQuote = (id) => {
           <td class="px-4 py-3">{{ q.numero }}</td>
           <td class="px-4 py-3">{{ q.agenteComercial }}</td>
           <td class="px-4 py-3">{{ q.empresa }}</td>
-          <td class="px-4 py-3">{{ q.cliente }}</td>
+          <td class="px-4 py-3">{{ q?.cliente && q?.cliente.name }}</td>
           <td class="px-4 py-3">{{ q.asistentes }}</td>
           <td class="px-4 py-3">{{ q.cantidadJornada }}</td>
           <td class="px-4 py-3">{{ q.cantidadProducto }}</td>

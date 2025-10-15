@@ -80,6 +80,18 @@
           <input v-model="nuevoCliente.reference" placeholder="Referencia" class="w-full border px-3 py-2 rounded" />
         </div>
 
+        <!-- Selector DIRECTO / INDIRECTO -->
+        <div class="flex items-center gap-4 mt-3">
+          <label class="flex items-center gap-1">
+            <input type="radio" value="INDIRECTO" v-model="nuevoCliente.type" />
+            INDIRECTO
+          </label>
+          <label class="flex items-center gap-1">
+            <input type="radio" value="DIRECTO" v-model="nuevoCliente.type" />
+            DIRECTO
+          </label>
+        </div>
+
         <div class="mt-4 text-right">
           <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" @click="actualizarCliente"
             :disabled="!nuevoCliente.name">

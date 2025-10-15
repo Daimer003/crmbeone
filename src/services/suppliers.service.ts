@@ -18,6 +18,24 @@ export const getSuppliers = async () => {
     }
 };
 
+export const getMyClients = async () => {
+    try {
+        const response = await axios.get(
+            "http://localhost:3000/client/direct",
+
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        return response;
+    } catch (error) {
+        throw error; // ✅ Lanza el error para manejarlo donde se use
+    }
+};
+
 
 export const createClient = async (data: any) => {
     try {
